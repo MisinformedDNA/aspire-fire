@@ -214,27 +214,20 @@ await app.RunAsync(); // This will start the Aspire dashboard and orchestration
 
 ### Running the Example
 
-The included example project can run in two modes:
+The included example project is a minimal Aspire AppHost that demonstrates Firebase resource configuration.
 
-**Demo Mode (Default)**:
-- Shows Firebase resource configuration without requiring full Aspire infrastructure
-- Perfect for learning and testing the extension
-- Set `"Aspire:DemoMode": true` in appsettings.json
-
-**AppHost Mode**:
-- Runs as a full Aspire AppHost with dashboard and orchestration
-- Requires Aspire workload to be installed (`dotnet workload install aspire`)
-- Set `"Aspire:DemoMode": false` in appsettings.json
-
+**Running the Example**:
 ```bash
 # Run the example
-cd examples/Aspire.Firebase.Examples.AppHost
-dotnet run
-
-# Or run in AppHost mode (requires Aspire workload)
-# First, set "Aspire:DemoMode": false in appsettings.json
+cd examples/Firebase.AppHost
 dotnet run
 ```
+
+**Prerequisites**:
+- Aspire workload installed: `dotnet workload install aspire`
+- Proper Aspire development environment setup
+
+**Troubleshooting**: If you encounter dashboard configuration errors, see the example's README for guidance or use the comprehensive code examples in this README instead.
 
 ## API Reference
 
@@ -291,6 +284,86 @@ The extension configures the following environment variables for Firebase servic
 - `FIRESTORE_DATABASE_ID` - Custom Firestore database ID
 
 ## Examples
+
+### Comprehensive Configuration Examples
+
+Here are various ways to configure Firebase resources in your Aspire AppHost:
+
+```csharp
+using Aspire.Hosting;
+
+var builder = DistributedApplication.CreateBuilder(args);
+
+// Example 1: Simple Firebase project setup
+var firebase = builder.AddFirebase("firebase", "my-firebase-project-id");
+
+// Example 2: Firebase with emulator for local development
+var firebaseDev = builder.AddFirebase("firebase-dev", "my-dev-project")
+    .WithEmulator(firestorePort: 8080, authPort: 9099);
+
+// Example 3: Separate Firestore resource
+var firestore = builder.AddFirebaseFirestore("firestore", "my-project-id", "(default)")
+    .WithEmulator(8080);
+
+// Example 4: Firebase Auth resource
+var auth = builder.AddFirebaseAuth("firebase-auth", "my-project-id")
+    .WithEmulator(9099);
+
+// Example 5: Chained configuration - Firebase with both Firestore and Auth
+var mainFirebase = builder.AddFirebase("main-firebase", "production-project");
+var mainFirestore = builder.AddFirebaseFirestore("main-firestore", mainFirebase)
+    .WithDatabaseId("production-db");
+var mainAuth = builder.AddFirebaseAuth("main-auth", mainFirebase);
+
+// Example 6: Development setup with emulators
+var devFirebase = builder.AddFirebase("dev-firebase", "development-project")
+    .WithEmulator()
+    .WithServiceAccountKey("/path/to/service-account.json");
+
+var app = builder.Build();
+await app.RunAsync();
+```
+
+### Configuration-Based Environment Switching
+
+```csharp
+using Aspire.Hosting;
+
+var builder = DistributedApplication.CreateBuilder(args);
+
+// Get configuration to determine environment
+var useEmulator = builder.Configuration.GetValue<bool>("Firebase:UseEmulator");
+var projectId = builder.Configuration.GetValue<string>("Firebase:ProjectId") ?? "my-project-id";
+
+var firebase = builder.AddFirebase("firebase", projectId);
+
+if (useEmulator)
+{
+    // Development: Use Firebase emulators
+    firebase.WithEmulator(firestorePort: 8080, authPort: 9099);
+    
+    var firestore = builder.AddFirebaseFirestore("firestore", firebase)
+        .WithEmulator(8080);
+    
+    var auth = builder.AddFirebaseAuth("auth", firebase)
+        .WithEmulator(9099);
+}
+else
+{
+    // Production: Use cloud Firebase with service account
+    var serviceAccountPath = builder.Configuration.GetValue<string>("Firebase:ServiceAccountPath");
+    if (!string.IsNullOrEmpty(serviceAccountPath))
+    {
+        firebase.WithServiceAccountKey(serviceAccountPath);
+    }
+    
+    var firestore = builder.AddFirebaseFirestore("firestore", firebase, "production-db");
+    var auth = builder.AddFirebaseAuth("auth", firebase);
+}
+
+var app = builder.Build();
+await app.RunAsync();
+```
 
 ### Complete Application Setup
 

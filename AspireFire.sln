@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aspire.Firebase.Hosting.Tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{9574AD51-6A93-4FC9-AD44-379E0EE91F4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aspire.Firebase.Examples.AppHost", "examples\Aspire.Firebase.Examples.AppHost\Aspire.Firebase.Examples.AppHost.csproj", "{84630351-894D-492B-BB86-98DB91423CF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Firebase.AppHost", "examples\Firebase.AppHost\Firebase.AppHost.csproj", "{84630351-894D-492B-BB86-98DB91423CF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
