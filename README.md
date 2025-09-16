@@ -177,6 +177,41 @@ await app.RunAsync();
 }
 ```
 
+### Aspire AppHost Project Setup
+
+To use Firebase resources in an Aspire application, your AppHost project needs to be configured properly:
+
+**Project File (`.csproj`)**:
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.4.2" />
+  
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>your-unique-id</UserSecretsId>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.4.2" />
+    <PackageReference Include="Aspire.Firebase.Hosting" Version="1.0.0" />
+  </ItemGroup>
+</Project>
+```
+
+**Program.cs**:
+```csharp
+var builder = DistributedApplication.CreateBuilder(args);
+
+var firebase = builder.AddFirebase("firebase", "my-project-id");
+var firestore = builder.AddFirebaseFirestore("firestore", firebase);
+
+var app = builder.Build();
+await app.RunAsync(); // This will start the Aspire dashboard and orchestration
+```
+
 ## API Reference
 
 ### Extension Methods

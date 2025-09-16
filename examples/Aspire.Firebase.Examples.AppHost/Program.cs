@@ -57,8 +57,7 @@ Console.WriteLine($"Auth: {authConnectionString}");
 // Build and run the application
 var app = builder.Build();
 
-// This would normally start the application host
-// For this example, we'll just demonstrate the setup
+// Display some information about the configured resources
 Console.WriteLine();
 Console.WriteLine("Firebase extension setup completed successfully!");
 Console.WriteLine("This example demonstrates various ways to configure Firebase resources with .NET Aspire.");
@@ -66,11 +65,9 @@ Console.WriteLine();
 Console.WriteLine("Usage patterns shown:");
 Console.WriteLine("- Simple Firebase project setup");
 Console.WriteLine("- Firebase with emulator configuration");
-Console.WriteLine("- Separate Firestore and Auth resources");  
+Console.WriteLine("- Separate Firestore and Auth resources");
 Console.WriteLine("- Chained resource configuration");
 Console.WriteLine("- Development vs production setups");
 
-// In a real application, you would call:
-// await app.RunAsync();
-
-return 0;
+// Run the Aspire application host
+await app.RunAsync();
