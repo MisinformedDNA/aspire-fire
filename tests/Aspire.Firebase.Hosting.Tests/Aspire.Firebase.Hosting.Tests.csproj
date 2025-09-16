@@ -20,7 +20,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Aspire.Hosting" Version="8.0.0-preview.1.23557.2" />
+    <PackageReference Include="Aspire.Hosting" Version="9.4.2" />
   </ItemGroup>
 
   <ItemGroup>

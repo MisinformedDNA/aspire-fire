@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting" Version="8.0.0-preview.1.23557.2" />
+    <PackageReference Include="Aspire.Hosting" Version="9.4.2" />
     <PackageReference Include="Google.Cloud.Firestore" Version="3.7.0" />
     <PackageReference Include="FirebaseAdmin" Version="2.4.0" />
   </ItemGroup>

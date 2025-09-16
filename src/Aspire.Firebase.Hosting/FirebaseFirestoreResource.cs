@@ -9,7 +9,7 @@ namespace Aspire.Firebase.Hosting;
 /// <param name="firebase">The Firebase project resource.</param>
 /// <param name="databaseId">The Firestore database ID (defaults to "(default)").</param>
 public class FirebaseFirestoreResource(string name, FirebaseResource firebase, string databaseId = "(default)")
-    : Resource(name), IResourceWithParent<FirebaseResource>, IResourceWithConnectionString
+    : Resource(name), IResourceWithParent<FirebaseResource>, IResourceWithConnectionString, IResourceWithEnvironment
 {
     /// <summary>
     /// Gets the parent Firebase project resource.
@@ -27,11 +27,23 @@ public class FirebaseFirestoreResource(string name, FirebaseResource firebase, s
     public string ProjectId => firebase.ProjectId;
 
     /// <summary>
+    /// Gets the connection string expression for Firestore.
+    /// </summary>
+    public ReferenceExpression ConnectionStringExpression =>
+        ReferenceExpression.Create($"ProjectId={ProjectId};DatabaseId={DatabaseId}");
+
+    /// <summary>
+    /// Gets the connection string environment variable name.
+    /// </summary>
+    public string ConnectionStringEnvironmentVariable => $"ConnectionStrings__{Name}";
+
+    /// <summary>
     /// Gets the connection string for Firestore.
     /// </summary>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/>.</param>
     /// <returns>The connection string for Firestore.</returns>
-    public string GetConnectionString()
+    public ValueTask<string?> GetConnectionStringAsync(CancellationToken cancellationToken = default)
     {
-        return $"ProjectId={ProjectId};DatabaseId={DatabaseId}";
+        return new ValueTask<string?>($"ProjectId={ProjectId};DatabaseId={DatabaseId}");
     }
 }

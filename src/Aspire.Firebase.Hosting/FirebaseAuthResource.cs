@@ -8,7 +8,7 @@ namespace Aspire.Firebase.Hosting;
 /// <param name="name">The name of the resource.</param>
 /// <param name="firebase">The Firebase project resource.</param>
 public class FirebaseAuthResource(string name, FirebaseResource firebase)
-    : Resource(name), IResourceWithParent<FirebaseResource>, IResourceWithConnectionString
+    : Resource(name), IResourceWithParent<FirebaseResource>, IResourceWithConnectionString, IResourceWithEnvironment
 {
     /// <summary>
     /// Gets the parent Firebase project resource.
@@ -21,11 +21,23 @@ public class FirebaseAuthResource(string name, FirebaseResource firebase)
     public string ProjectId => firebase.ProjectId;
 
     /// <summary>
+    /// Gets the connection string expression for Firebase Authentication.
+    /// </summary>
+    public ReferenceExpression ConnectionStringExpression =>
+        ReferenceExpression.Create($"ProjectId={ProjectId}");
+
+    /// <summary>
+    /// Gets the connection string environment variable name.
+    /// </summary>
+    public string ConnectionStringEnvironmentVariable => $"ConnectionStrings__{Name}";
+
+    /// <summary>
     /// Gets the connection string for Firebase Authentication.
     /// </summary>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/>.</param>
     /// <returns>The connection string for Firebase Authentication.</returns>
-    public string GetConnectionString()
+    public ValueTask<string?> GetConnectionStringAsync(CancellationToken cancellationToken = default)
     {
-        return $"ProjectId={ProjectId}";
+        return new ValueTask<string?>($"ProjectId={ProjectId}");
     }
 }

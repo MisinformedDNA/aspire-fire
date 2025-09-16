@@ -47,9 +47,12 @@ Console.WriteLine($"8. Dev Firebase: {devFirebase.Resource.Name} - Project: {dev
 // Display connection strings
 Console.WriteLine();
 Console.WriteLine("Connection Strings:");
-Console.WriteLine($"Firebase: {firebase.Resource.GetConnectionString()}");
-Console.WriteLine($"Firestore: {firestore.Resource.GetConnectionString()}");
-Console.WriteLine($"Auth: {auth.Resource.GetConnectionString()}");
+var firebaseConnectionString = await firebase.Resource.GetConnectionStringAsync();
+var firestoreConnectionString = await firestore.Resource.GetConnectionStringAsync();
+var authConnectionString = await auth.Resource.GetConnectionStringAsync();
+Console.WriteLine($"Firebase: {firebaseConnectionString}");
+Console.WriteLine($"Firestore: {firestoreConnectionString}");
+Console.WriteLine($"Auth: {authConnectionString}");
 
 // Build and run the application
 var app = builder.Build();

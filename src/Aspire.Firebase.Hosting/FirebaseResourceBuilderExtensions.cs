@@ -55,8 +55,8 @@ public static class FirebaseResourceBuilderExtensions
         ArgumentNullException.ThrowIfNull(builder);
 
         return builder
-            .WithEnvironment("FIRESTORE_EMULATOR_HOST", $"localhost:{firestorePort}")
-            .WithEnvironment("FIREBASE_AUTH_EMULATOR_HOST", $"localhost:{authPort}")
+            .WithEnvironment("FIRESTORE_EMULATOR_HOST", $"localhost:{firestorePort.ToString()}")
+            .WithEnvironment("FIREBASE_AUTH_EMULATOR_HOST", $"localhost:{authPort.ToString()}")
             .WithEnvironment("GCLOUD_PROJECT", builder.Resource.ProjectId);
     }
 
@@ -73,7 +73,7 @@ public static class FirebaseResourceBuilderExtensions
         ArgumentNullException.ThrowIfNull(builder);
 
         return builder
-            .WithEnvironment("FIRESTORE_EMULATOR_HOST", $"localhost:{port}")
+            .WithEnvironment("FIRESTORE_EMULATOR_HOST", $"localhost:{port.ToString()}")
             .WithEnvironment("GCLOUD_PROJECT", builder.Resource.ProjectId);
     }
 
@@ -90,7 +90,7 @@ public static class FirebaseResourceBuilderExtensions
         ArgumentNullException.ThrowIfNull(builder);
 
         return builder
-            .WithEnvironment("FIREBASE_AUTH_EMULATOR_HOST", $"localhost:{port}")
+            .WithEnvironment("FIREBASE_AUTH_EMULATOR_HOST", $"localhost:{port.ToString()}")
             .WithEnvironment("GCLOUD_PROJECT", builder.Resource.ProjectId);
     }
 }

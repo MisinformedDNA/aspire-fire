@@ -112,6 +112,71 @@ var app = builder.Build();
 await app.RunAsync();
 ```
 
+### Switching Between Emulator and Cloud
+
+You can easily switch between Firebase emulators (for local development) and cloud Firebase (for production) using configuration or environment variables:
+
+```csharp
+var builder = DistributedApplication.CreateBuilder(args);
+
+// Get configuration to determine environment
+var useEmulator = builder.Configuration.GetValue<bool>("Firebase:UseEmulator");
+var projectId = builder.Configuration.GetValue<string>("Firebase:ProjectId") ?? "my-project-id";
+
+var firebase = builder.AddFirebase("firebase", projectId);
+
+IResourceBuilder<FirebaseFirestoreResource> firestore;
+IResourceBuilder<FirebaseAuthResource> auth;
+
+if (useEmulator)
+{
+    // Development: Use Firebase emulators
+    firebase.WithEmulator(firestorePort: 8080, authPort: 9099);
+    
+    firestore = builder.AddFirebaseFirestore("firestore", firebase)
+        .WithEmulator(8080);
+    
+    auth = builder.AddFirebaseAuth("auth", firebase)
+        .WithEmulator(9099);
+}
+else
+{
+    // Production: Use cloud Firebase with service account
+    var serviceAccountPath = builder.Configuration.GetValue<string>("Firebase:ServiceAccountPath");
+    if (!string.IsNullOrEmpty(serviceAccountPath))
+    {
+        firebase.WithServiceAccountKey(serviceAccountPath);
+    }
+    
+    firestore = builder.AddFirebaseFirestore("firestore", firebase, "production-db");
+    auth = builder.AddFirebaseAuth("auth", firebase);
+}
+
+var app = builder.Build();
+await app.RunAsync();
+```
+
+**Configuration Example (`appsettings.Development.json`)**:
+```json
+{
+  "Firebase": {
+    "UseEmulator": true,
+    "ProjectId": "dev-project-id"
+  }
+}
+```
+
+**Configuration Example (`appsettings.Production.json`)**:
+```json
+{
+  "Firebase": {
+    "UseEmulator": false,
+    "ProjectId": "production-project-id",
+    "ServiceAccountPath": "/secure/path/to/service-account.json"
+  }
+}
+```
+
 ## API Reference
 
 ### Extension Methods
@@ -275,7 +340,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Dependencies
 
 - `.NET 8.0` or later
-- `Aspire.Hosting 8.0+`
+- `Aspire.Hosting 9.0+`
 - `Google.Cloud.Firestore 3.7.0+`
 - `FirebaseAdmin 2.4.0+`
 

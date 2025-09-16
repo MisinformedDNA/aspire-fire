@@ -7,7 +7,7 @@ namespace Aspire.Firebase.Hosting.Tests;
 public class FirebaseResourceTests
 {
     [Fact]
-    public void FirebaseResource_ShouldCreateWithCorrectProperties()
+    public async Task FirebaseResource_ShouldCreateWithCorrectProperties()
     {
         // Arrange
         const string name = "test-firebase";
@@ -19,11 +19,13 @@ public class FirebaseResourceTests
         // Assert
         Assert.Equal(name, resource.Name);
         Assert.Equal(projectId, resource.ProjectId);
-        Assert.Equal(projectId, resource.GetConnectionString());
+        var connectionString = await resource.GetConnectionStringAsync();
+        Assert.Equal(projectId, connectionString);
+        Assert.Equal($"ConnectionStrings__{name}", resource.ConnectionStringEnvironmentVariable);
     }
 
     [Fact]
-    public void FirebaseFirestoreResource_ShouldCreateWithCorrectProperties()
+    public async Task FirebaseFirestoreResource_ShouldCreateWithCorrectProperties()
     {
         // Arrange
         const string firebaseName = "test-firebase";
@@ -40,11 +42,13 @@ public class FirebaseResourceTests
         Assert.Equal(projectId, firestore.ProjectId);
         Assert.Equal(databaseId, firestore.DatabaseId);
         Assert.Equal(firebase, firestore.Parent);
-        Assert.Equal($"ProjectId={projectId};DatabaseId={databaseId}", firestore.GetConnectionString());
+        var connectionString = await firestore.GetConnectionStringAsync();
+        Assert.Equal($"ProjectId={projectId};DatabaseId={databaseId}", connectionString);
+        Assert.Equal($"ConnectionStrings__{firestoreName}", firestore.ConnectionStringEnvironmentVariable);
     }
 
     [Fact]
-    public void FirebaseFirestoreResource_ShouldUseDefaultDatabaseId()
+    public async Task FirebaseFirestoreResource_ShouldUseDefaultDatabaseId()
     {
         // Arrange
         const string firebaseName = "test-firebase";
@@ -57,11 +61,12 @@ public class FirebaseResourceTests
 
         // Assert
         Assert.Equal("(default)", firestore.DatabaseId);
-        Assert.Equal($"ProjectId={projectId};DatabaseId=(default)", firestore.GetConnectionString());
+        var connectionString = await firestore.GetConnectionStringAsync();
+        Assert.Equal($"ProjectId={projectId};DatabaseId=(default)", connectionString);
     }
 
     [Fact]
-    public void FirebaseAuthResource_ShouldCreateWithCorrectProperties()
+    public async Task FirebaseAuthResource_ShouldCreateWithCorrectProperties()
     {
         // Arrange
         const string firebaseName = "test-firebase";
@@ -76,6 +81,8 @@ public class FirebaseResourceTests
         Assert.Equal(authName, auth.Name);
         Assert.Equal(projectId, auth.ProjectId);
         Assert.Equal(firebase, auth.Parent);
-        Assert.Equal($"ProjectId={projectId}", auth.GetConnectionString());
+        var connectionString = await auth.GetConnectionStringAsync();
+        Assert.Equal($"ProjectId={projectId}", connectionString);
+        Assert.Equal($"ConnectionStrings__{authName}", auth.ConnectionStringEnvironmentVariable);
     }
 }
