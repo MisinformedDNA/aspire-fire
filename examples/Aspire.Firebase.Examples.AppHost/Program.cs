@@ -1,4 +1,5 @@
 ﻿using Aspire.Hosting;
+using Microsoft.Extensions.Configuration;
 
 // Create the distributed application builder
 var builder = DistributedApplication.CreateBuilder(args);
@@ -69,5 +70,23 @@ Console.WriteLine("- Separate Firestore and Auth resources");
 Console.WriteLine("- Chained resource configuration");
 Console.WriteLine("- Development vs production setups");
 
-// Run the Aspire application host
-await app.RunAsync();
+// Check if we're in demo mode or should run the full Aspire host
+var demoMode = builder.Configuration.GetValue<bool>("Aspire:DemoMode", true);
+
+if (demoMode)
+{
+    Console.WriteLine();
+    Console.WriteLine("Running in demo mode - showing configuration without starting full Aspire orchestration.");
+    Console.WriteLine("To run as a full Aspire AppHost, set 'Aspire:DemoMode' to false in appsettings.json");
+    Console.WriteLine("and ensure you have the Aspire workload installed.");
+    Console.WriteLine();
+    Console.WriteLine("Demo completed successfully!");
+}
+else
+{
+    Console.WriteLine();
+    Console.WriteLine("Running in AppHost mode - starting Aspire orchestration...");
+    
+    // Run the Aspire application host
+    await app.RunAsync();
+}

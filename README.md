@@ -212,6 +212,30 @@ var app = builder.Build();
 await app.RunAsync(); // This will start the Aspire dashboard and orchestration
 ```
 
+### Running the Example
+
+The included example project can run in two modes:
+
+**Demo Mode (Default)**:
+- Shows Firebase resource configuration without requiring full Aspire infrastructure
+- Perfect for learning and testing the extension
+- Set `"Aspire:DemoMode": true` in appsettings.json
+
+**AppHost Mode**:
+- Runs as a full Aspire AppHost with dashboard and orchestration
+- Requires Aspire workload to be installed (`dotnet workload install aspire`)
+- Set `"Aspire:DemoMode": false` in appsettings.json
+
+```bash
+# Run the example
+cd examples/Aspire.Firebase.Examples.AppHost
+dotnet run
+
+# Or run in AppHost mode (requires Aspire workload)
+# First, set "Aspire:DemoMode": false in appsettings.json
+dotnet run
+```
+
 ## API Reference
 
 ### Extension Methods
